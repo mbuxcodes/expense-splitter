@@ -1,0 +1,1 @@
+Feature-first business modules. Each feature folder (auth, groups, expenses, settlements, analytics) owns its own components, RTK Query endpoints, schemas, and types. See FRONTEND_ARCHITECTURE.md Section 2-4.

@@ -1,0 +1,15 @@
+node_modules/
+dist/
+build/
+coverage/
+
+.env*
+!.env.example
+
+*.log
+.DS_Store
+
+client/.vite/
+server/.tsx-cache/
+
+*.tsbuildinfo
