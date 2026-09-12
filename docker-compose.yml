@@ -1,0 +1,89 @@
+# Expense Splitter (Enhanced) — Local Development Environment
+#
+# Usage: npm run docker:up   (wraps `docker compose up --build`)
+#
+# This file is for LOCAL DEVELOPMENT ONLY. It bind-mounts source code for hot
+# reload and uses relaxed defaults appropriate for a dev machine, not production.
+# A production deployment (later milestone) uses separate, hardened images.
+#
+# Prerequisites: copy .env.example -> .env at the repo root, client/, and server/
+# before running this file. See README.md "Local Development with Docker".
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: expense-splitter-mongodb
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # Credentials come from the repo-root .env file (never hardcoded here).
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DATABASE:-expense_splitter}
+    ports:
+      - '27017:27017'
+    volumes:
+      # Named volume so data survives `docker compose down` (but not `-v`).
+      - mongodb_data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - expense-splitter-network
+
+  server:
+    build:
+      # Build context is the repo root (not ./server) because this is an npm
+      # workspaces monorepo -- the Dockerfile needs the root package.json and
+      # package-lock.json to install correctly. See server/Dockerfile comments.
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: expense-splitter-server
+    restart: unless-stopped
+    env_file:
+      - ./server/.env
+    ports:
+      - '5000:5000'
+    volumes:
+      # Bind-mount source for hot reload (tsx watch); node_modules stays in a
+      # named volume so the host's (possibly Windows) node_modules never
+      # shadows the container's Linux-built native dependencies.
+      - ./server/src:/app/server/src
+      - server_node_modules:/app/server/node_modules
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - expense-splitter-network
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    container_name: expense-splitter-client
+    restart: unless-stopped
+    env_file:
+      - ./client/.env
+    ports:
+      - '5173:5173'
+    volumes:
+      - ./client/src:/app/client/src
+      - ./client/index.html:/app/client/index.html
+      - client_node_modules:/app/client/node_modules
+    depends_on:
+      - server
+    networks:
+      - expense-splitter-network
+
+networks:
+  expense-splitter-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  server_node_modules:
+  client_node_modules:

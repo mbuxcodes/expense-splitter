@@ -22,10 +22,70 @@ Every product and architecture decision behind this project lives in `docs/`, in
 
 ## Getting Started
 
-    npm install
+```powershell
+npm install
+```
 
-Docker-based local setup and full environment variable documentation are added as Milestone 4.2 completes.
+See **Local Development with Docker** below for the full local stack (client, server, MongoDB).
+
+## Development Commands
+
+```powershell
+npm run dev          # not yet wired to a running app -- see Milestones 4.3/4.4
+npm run lint          # ESLint across both workspaces
+npm run typecheck      # TypeScript project-reference typecheck, both workspaces
+npm run format:check    # Prettier check (non-mutating)
+npm run build             # production build, both workspaces
+npm run test                # Vitest, both workspaces
+```
+
+## Local Development with Docker
+
+### 1. Requirements
+
+- **Node.js 22+** (see `.nvmrc`) — only needed if you want to run scripts outside Docker; the containers bring their own Node runtime.
+- **Docker Desktop** (includes the `docker compose` CLI) — [docker.com](https://www.docker.com/products/docker-desktop/).
+
+### 2. Environment setup
+
+Copy each `.env.example` to `.env` and fill in real values (never commit the `.env` files — they're git-ignored):
+
+```powershell
+Copy-Item .env.example .env
+Copy-Item client\.env.example client\.env
+Copy-Item server\.env.example server\.env
+```
+
+The root `.env` configures the MongoDB container's credentials; `client/.env` and `server/.env` configure the application itself. See the comments inside each file for what every variable does.
+
+### 3. Starting the application
+
+```powershell
+npm run docker:up
+```
+
+This builds the images (first run only, or after a dependency change) and starts all three services. Source code is bind-mounted, so edits on your machine trigger hot reload inside the containers — no rebuild needed for day-to-day changes.
+
+### 4. Available services
+
+| Service                  | URL                                                                             |
+| ------------------------ | ------------------------------------------------------------------------------- |
+| Client (Vite dev server) | http://localhost:5173                                                           |
+| Server (Express API)     | http://localhost:5000                                                           |
+| MongoDB                  | `localhost:27017` (inside Docker, other containers reach it at `mongodb:27017`) |
+
+### 5. Common commands
+
+```powershell
+npm run docker:down    # stop and remove containers (data volume persists)
+npm run docker:logs    # follow logs from all services
+docker compose up --build   # rebuild images after a dependency change
+```
+
+## Git Workflow
+
+`main` (always deployable) <- `develop` (integration) <- `feature/*` (one branch per unit of work). Conventional Commits format (`feat(scope): ...`, `fix(scope): ...`, `chore(scope): ...`, `docs: ...`). See `docs/DEVELOPMENT_STRATEGY.md` Section 8 for the full rationale.
 
 ## Project Status
 
-Currently in Phase 4 — Development Execution, Milestone 4.1 (repository foundation).
+Currently in Phase 4 — Development Execution, Milestone 4.2 (local development environment).
