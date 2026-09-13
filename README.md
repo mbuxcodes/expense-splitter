@@ -39,7 +39,44 @@ npm run build             # production build, both workspaces
 npm run test                # Vitest, both workspaces
 ```
 
-## Local Development with Docker
+## Local Development Setup (without Docker)
+
+If Docker isn't practical on your machine, run the client and backend directly against MongoDB Atlas.
+
+**1. MongoDB Atlas setup**
+Create a free cluster at [mongodb.com/atlas](https://www.mongodb.com/atlas), add a database user, and allow your current IP (or `0.0.0.0/0` for local development only — never for production). Copy the connection string.
+
+**2. Environment files**
+
+```powershell
+Copy-Item client\.env.example client\.env
+Copy-Item server\.env.example server\.env
+```
+
+Edit `server\.env` and set `MONGODB_URI` to your real Atlas connection string, and `JWT_SECRET` to a random string of 32+ characters. Leave `CORS_ORIGIN` as `http://localhost:5173` for local development.
+
+**3. Backend startup** (Terminal 1)
+
+```powershell
+npm run dev --workspace server
+```
+
+If a required variable is missing or invalid, the server prints exactly which one and exits — it does not start in a broken state. On success, you'll see `MongoDB connected successfully.` followed by `Expense Splitter API listening on port 5000 (development)`.
+
+**4. Frontend startup** (Terminal 2)
+
+```powershell
+npm run dev --workspace client
+```
+
+**5. Health endpoint testing**
+
+```powershell
+curl http://localhost:5000/api/v1/health
+curl http://localhost:5000/api/v1/health/database
+```
+
+Both should return `{"success":true,"data":{...}}`. The second confirms the live Atlas connection specifically, not just that the server process is running.
 
 ### 1. Requirements
 
@@ -88,4 +125,4 @@ docker compose up --build   # rebuild images after a dependency change
 
 ## Project Status
 
-Currently in Phase 4 — Development Execution, Milestone 4.2 (local development environment).
+Currently in Phase 4 — Development Execution, Milestone 4.3 (local development environment setup).
