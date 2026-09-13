@@ -1,3 +1,76 @@
 @import 'tailwindcss';
 
-/* Design tokens (DESIGN_SYSTEM.md) are wired here in Milestone 4.4 - Frontend Foundation. */
+/*
+ * Design tokens, transcribed from DESIGN_SYSTEM.md (Phase 2, frozen).
+ * Tailwind v4's CSS-first config: tokens under --color-* are automatically
+ * available as utilities (bg-primary, text-success, etc.) with no
+ * tailwind.config.js needed, per Objective 2.
+ *
+ * This is the foundation only -- component-level styling is out of scope
+ * for this milestone (no UI components exist yet to style).
+ */
+@theme {
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-secondary: #7c3aed;
+
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-300: #d1d5db;
+  --color-neutral-500: #6b7280;
+  --color-neutral-700: #374151;
+  --color-neutral-900: #111827;
+
+  --color-background: #ffffff;
+  --color-surface: #f9fafb;
+  --color-surface-border: #e5e7eb;
+
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+}
+
+/*
+ * Tokens without a direct Tailwind v4 @theme utility mapping (typography
+ * scale, shadows, motion durations) -- kept as plain CSS custom properties,
+ * usable via arbitrary-value syntax (e.g. text-[length:var(--font-size-2xl)])
+ * or direct var() reference in component CSS, matching DESIGN_SYSTEM.md
+ * Sections 3, 6, 7 exactly.
+ */
+:root {
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-base: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 32px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-full: 9999px;
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-dropdown: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-modal: 0 12px 32px rgba(0, 0, 0, 0.18);
+
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+}
+
+body {
+  font-family: var(--font-family-sans);
+  color: var(--color-neutral-900);
+  background-color: var(--color-background);
+}

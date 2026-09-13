@@ -1,12 +1,9 @@
-// Milestone 4.1 placeholder entrypoint.
-// Router, Redux store, and providers are wired in Milestone 4.4 (Frontend Foundation).
-// See client/src/app/README.md and FRONTEND_ARCHITECTURE.md Section 3.
+// Entrypoint. Deliberately minimal (Objective 7) -- mounts <App /> and
+// nothing else. All composition (providers, routing) lives in app/.
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-
-function App(): React.JSX.Element {
-  return <div>Expense Splitter — scaffold</div>;
-}
+import { App } from './app/App.js';
+import './styles/index.css';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

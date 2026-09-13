@@ -39,6 +39,28 @@ npm run build             # production build, both workspaces
 npm run test                # Vitest, both workspaces
 ```
 
+## Frontend Development Setup
+
+**Required environment variable** (`client/.env`, copied from `client/.env.example`):
+
+```
+VITE_API_BASE_URL=http://localhost:5000/api/v1
+```
+
+**Install:**
+
+```powershell
+npm install
+```
+
+**Run the dev server:**
+
+```powershell
+npm run dev --workspace client
+```
+
+Visit `http://localhost:5173/health-check` to confirm the frontend can reach the backend's `/api/v1/health` endpoint end-to-end (the backend must be running separately — see Local Development Setup above).
+
 ## Local Development Setup (without Docker)
 
 If Docker isn't practical on your machine, run the client and backend directly against MongoDB Atlas.
@@ -125,4 +147,4 @@ docker compose up --build   # rebuild images after a dependency change
 
 ## Project Status
 
-Currently in Phase 4 — Development Execution, Milestone 4.3 (local development environment setup).
+Currently in Phase 4 — Development Execution, Milestone 4.4 (frontend foundation).
